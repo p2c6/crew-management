@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import { getRanks } from '../../../actions/ranks';
 
 
 
@@ -56,6 +57,19 @@ export default function EditCrewForm({ crew }) {
             'rank-id': crew.rank_id || '',
         });
     }, [crew]);
+
+    const [ranks, setRanks] = useState([]);
+
+    //GET ALL RANKS
+    const getAllRanks = async () => {
+        const response = await getRanks();
+        setRanks(response.data)
+    };
+
+    useEffect(() => {
+        getAllRanks();
+    }, []);
+
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -156,11 +170,15 @@ export default function EditCrewForm({ crew }) {
                 <Form.Label>Rank</Form.Label>
                 <Form.Select
                     id="rank-id"
-                    onChange={(e) => inputChangeHandler('rank-id', e.target.value)}
                     value={userInput['rank-id']}
+                    onChange={(e) => inputChangeHandler('rank-id', e.target.value)}
                 >
                     <option>CHOOSE RANK</option>
-                    <option value={1}>MASTER MARINER</option>
+                    {ranks.map(item => (
+                        <option key={item.id} value={item.id}>
+                            {item.short_name}
+                        </option>
+                    ))}
                 </Form.Select>
             </Form.Group>
 
