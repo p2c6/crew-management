@@ -11,6 +11,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { faEye, faFolder, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getDocuments } from '../../actions/documents';
 
 
 const columns = [
@@ -26,10 +27,61 @@ const columns = [
     },
 ];
 
+const getRowColor = (row) => {
+    const expiryDate = new Date(row.expiry_date_formatted);
+    const currentDate = new Date();
+
+    const daysDifference = Math.floor((expiryDate - currentDate) / (24 * 60 * 60 * 1000));
+
+    if (daysDifference <= 7) {
+        return { backgroundColor: 'red', color: 'white', padding: 5, borderRadius: 5 };
+    } else if (daysDifference <= 30) {
+        return { backgroundColor: 'yellow', padding: 5, borderRadius: 5 };
+    } else if (daysDifference <= 90) {
+        return { backgroundColor: 'orange', padding: 5, borderRadius: 5 };
+    } else {
+        return {};
+    }
+}
+
 const crewDocumentColumns = [
     {
         name: 'Document',
         selector: row => row.document_name,
+        sortable: true
+    },
+    {
+        name: 'File',
+        selector: row => row.original_file_name,
+        sortable: true
+    },
+    {
+        name: 'Code',
+        selector: row => row.code,
+        sortable: true
+    },
+    {
+        name: 'Issued Date',
+        selector: row => row.issued_date_formatted,
+        sortable: true
+    },
+    {
+        name: 'Expiry Date',
+        selector: row => (
+            <div style={getRowColor(row)}>
+                {row.expiry_date_formatted}
+            </div>
+        ),
+        sortable: true
+    },
+    {
+        name: 'Person In Charge',
+        selector: row => row.full_name,
+        sortable: true
+    },
+    {
+        name: 'Date Created',
+        selector: row => row.created_at_formatted,
         sortable: true
     },
 ];
@@ -243,7 +295,7 @@ export default function CrewList() {
         })
     }
 
-    const handleFileUpload = async (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
         try {
             const formData = new FormData();
@@ -253,9 +305,11 @@ export default function CrewList() {
             formData.append('issued_date', userInput['issued-date'])
             formData.append('expiry_date', userInput['expiry-date'])
             formData.append('document_id', userInput['document-id'])
+            formData.append('doc_no', userInput['doc-no'])
 
 
-            await axios.post('/api/upload-crew-document', formData, {
+
+            await axios.post('/api/crew-documents', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -266,6 +320,18 @@ export default function CrewList() {
             console.error('Error uploading file:', error);
         }
     }
+
+    const [documents, setDocuments] = useState([]);
+
+    //GET ALL DOCUMENTS
+    const getAllDocuments = async () => {
+        const response = await getDocuments();
+        setDocuments(response.data)
+    };
+
+    useEffect(() => {
+        getAllDocuments();
+    }, []);
 
 
 
@@ -307,7 +373,7 @@ export default function CrewList() {
                 </Modal.Header>
                 <Modal.Body>
                     <Card className='p-2'>
-                        <Form onSubmit={handleFileUpload}>
+                        <Form onSubmit={handleSubmit}>
                             <Form.Label><p className='text-success'>Add New File (+)</p></Form.Label>
                             <Form.Group className="mb-3">
                                 <Form.Control
@@ -318,11 +384,35 @@ export default function CrewList() {
                                 />
                             </Form.Group>
 
+                            <Form.Group as={Col}>
+                                <Form.Label>Document Name</Form.Label>
+                                <Form.Select
+                                    id="document-id"
+                                    onChange={(e) => inputChangeHandler('document-id', e.target.value)}
+                                >
+                                    <option>CHOOSE DOCUMENT</option>
+                                    {documents.map(item => (
+                                        <option key={item.id} value={item.id}>
+                                            {item.document_name}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group as={Col}>
+                                <Form.Label>Doc No</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    id="doc-no"
+                                    onChange={(e) => inputChangeHandler('doc-no', e.target.value)}
+                                />
+                            </Form.Group>
+
                             <Form.Group className="mb-3">
                                 <Form.Label>Code</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="Enter Address"
+                                    placeholder="Enter Code"
                                     id="doc-code"
                                     onChange={(e) => inputChangeHandler('doc-code', e.target.value)}
                                 />
@@ -346,26 +436,7 @@ export default function CrewList() {
                                 />
                             </Form.Group>
 
-                            <Form.Group as={Col}>
-                                <Form.Label>Rank</Form.Label>
-                                <Form.Select defaultValue="Choose..."
-                                    id="document-id"
-                                    onChange={(e) => inputChangeHandler('document-id', e.target.value)}
-                                >
-                                    <option>CHOOSE DOCUMENT</option>
-                                    <option value={2}>FORM 1</option>
-                                    <option value={3}>FORM 2</option>
-                                </Form.Select>
-                            </Form.Group>
 
-                            {/* <Form.Group as={Col}>
-                                <Form.Label>Doc No</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    id="doc-no"
-                                    onChange={(e) => inputChangeHandler('doc-no', e.target.value)}
-                                />
-                            </Form.Group> */}
 
 
                             <Button variant="primary mt-2" type="submit">
