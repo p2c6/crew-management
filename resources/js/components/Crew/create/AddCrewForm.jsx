@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { createCrew, getCrews } from "../../../actions/crews";
-import { useState } from 'react';
+import { getRanks } from '../../../actions/ranks';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -41,6 +42,18 @@ export default function AddCrewForm() {
 
         navigate('/crews', { state: { message: response.data.message } });
     }
+
+    const [ranks, setRanks] = useState([]);
+
+    //GET ALL RANKS
+    const getAllRanks = async () => {
+        const response = await getRanks();
+        setRanks(response.data)
+    };
+
+    useEffect(() => {
+        getAllRanks();
+    }, []);
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -131,12 +144,16 @@ export default function AddCrewForm() {
 
             <Form.Group as={Col}>
                 <Form.Label>Rank</Form.Label>
-                <Form.Select defaultValue="Choose..."
+                <Form.Select
                     id="rank-id"
                     onChange={(e) => inputChangeHandler('rank-id', e.target.value)}
                 >
                     <option>CHOOSE RANK</option>
-                    <option value={1}>MASTER MARINER</option>
+                    {ranks.map(item => (
+                        <option key={item.id} value={item.id}>
+                            {item.short_name}
+                        </option>
+                    ))}
                 </Form.Select>
             </Form.Group>
 
