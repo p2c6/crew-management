@@ -24,6 +24,7 @@ Route::controller(CrewsController::class)->group(function () {
 //CREW DOCUMENT
 Route::controller(CrewDocumentController::class)->group(function () {
     Route::get('/crew-documents/{id}', 'show');
+    Route::post('/crew-documents', 'store');
 });
 
 //DOCUMENT
