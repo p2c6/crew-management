@@ -269,27 +269,6 @@ export default function CrewList() {
 
     const crewDocumentCustomColumns = [
         ...crewDocumentColumns,
-        {
-            name: 'Actions',
-            cell: (row) => (
-                <>
-                    <Row>
-                        <Col>
-                            <OverlayTrigger
-                                placement="bottom"
-                                delay={{ show: 250, hide: 400 }}
-                                overlay={renderTooltip('', 'Delete')}
-                            >
-                                <Button variant="danger mb-2 mt-2" onClick={() => showDeleteConfirmation(row.id)}>
-                                    <FontAwesomeIcon icon={faTrash} />
-                                </Button>
-                            </OverlayTrigger>
-
-                        </Col>
-                    </Row>
-                </>
-            ),
-        },
     ];
 
     //FILE UPLOAD
