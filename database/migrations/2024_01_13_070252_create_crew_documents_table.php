@@ -18,6 +18,7 @@ class CreateCrewDocumentsTable extends Migration
             $table->unsignedBigInteger('crew_id');
             $table->unsignedBigInteger('document_id');
             $table->unsignedBigInteger('doc_no');
+            $table->string('folder');
             $table->string('file_name');
             $table->string('original_file_name');
             $table->string('code');
