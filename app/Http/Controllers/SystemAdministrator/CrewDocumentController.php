@@ -14,7 +14,6 @@ class CrewDocumentController extends Controller
     public function show($id)
     {
         $crewDocuments = CrewDocument::where('crew_id', $id)
-            ->join('users', 'users.id', 'crew_documents.person_in_charge_user_id')
             ->join('documents', 'documents.id', 'crew_documents.document_id')
             ->select(
                 'crew_documents.folder',
@@ -26,7 +25,7 @@ class CrewDocumentController extends Controller
                 DB::raw("DATE_FORMAT(crew_documents.created_at, '%M %d, %Y') as created_at_formatted"),
                 'crew_documents.person_in_charge_user_id',
                 'documents.document_name',
-                'users.full_name',
+                'crew_documents.person_in_charge_user_id as full_name',
             )
             ->get();
 
