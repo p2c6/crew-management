@@ -25,6 +25,7 @@ export default function AddDocumentForm() {
         event.preventDefault()
 
         setErrorMessages(null)
+
         const formData = {
             "document_name": userInput['document-name'],
         }
