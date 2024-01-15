@@ -14,8 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const columns = [
     {
-        name: 'Code',
-        selector: row => row.code,
+        name: 'Short Name',
+        selector: row => row.short_name,
         sortable: true
     },
 ];
