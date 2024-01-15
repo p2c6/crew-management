@@ -24,7 +24,7 @@ class CreateCrewDocumentsTable extends Migration
             $table->string('code');
             $table->date('issued_date');
             $table->date('expiry_date');
-            $table->unsignedBigInteger('person_in_charge_user_id');
+            $table->string('person_in_charge_user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('crew_id')->references('id')->on('crews');
