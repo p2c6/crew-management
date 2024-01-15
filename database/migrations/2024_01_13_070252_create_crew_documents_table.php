@@ -29,7 +29,6 @@ class CreateCrewDocumentsTable extends Migration
 
             $table->foreign('crew_id')->references('id')->on('crews');
             $table->foreign('document_id')->references('id')->on('documents');
-            $table->foreign('person_in_charge_user_id')->references('id')->on('users');
         });
     }
 
