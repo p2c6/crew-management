@@ -304,8 +304,6 @@ export default function CrewList() {
             formData.append('document_id', userInput['document-id'] ?? '')
             formData.append('doc_no', userInput['doc-no'] ?? '')
 
-
-
             const response = await axios.post('/api/crew-documents', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
