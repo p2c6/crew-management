@@ -12,7 +12,9 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import { faEye, faFolder, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getDocuments } from '../../actions/documents';
-
+import { getDocumentURL } from '../../helper/helper';
+import CustomAlert from '../utils/CustomAlert';
+import ErrorValidationAlert from '../utils/ErrorValidationAlert';
 
 const columns = [
     {
@@ -44,6 +46,17 @@ const getRowColor = (row) => {
     }
 }
 
+function openDocumentURL(event, folder, fileName) {
+    event.preventDefault();
+
+    var url = getDocumentURL(folder, fileName);
+
+    if (url) {
+        window.open(url, '_blank');
+    }
+}
+
+
 const crewDocumentColumns = [
     {
         name: 'Document',
@@ -52,7 +65,9 @@ const crewDocumentColumns = [
     },
     {
         name: 'File',
-        selector: row => row.original_file_name,
+        selector: row => (
+            <a href="#" onClick={(event) => openDocumentURL(event, row.folder, row.file_name)} target="_blank" rel="noopener noreferrer">{row.original_file_name}</a>
+        ),
         sortable: true
     },
     {
@@ -294,29 +309,32 @@ export default function CrewList() {
             }
         })
     }
+    const [errorMessages, setErrorMessages] = useState(null);
 
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
+            setErrorMessages(null);
+
             const formData = new FormData();
-            formData.append('pdfFile', file);
+            formData.append('pdfFile', file ?? '');
             formData.append('crewId', crewId)
-            formData.append('code', userInput['doc-code'])
-            formData.append('issued_date', userInput['issued-date'])
-            formData.append('expiry_date', userInput['expiry-date'])
-            formData.append('document_id', userInput['document-id'])
-            formData.append('doc_no', userInput['doc-no'])
+            formData.append('code', userInput['doc-code'] ?? '')
+            formData.append('issued_date', userInput['issued-date'] ?? '')
+            formData.append('expiry_date', userInput['expiry-date'] ?? '')
+            formData.append('document_id', userInput['document-id'] ?? '')
+            formData.append('doc_no', userInput['doc-no'] ?? '')
 
 
 
-            await axios.post('/api/crew-documents', formData, {
+            const response = await axios.post('/api/crew-documents', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
-            alert('File uploaded successfully!');
         } catch (error) {
+            setErrorMessages(error.response.data.errors)
             console.error('Error uploading file:', error);
         }
     }
@@ -372,6 +390,7 @@ export default function CrewList() {
                     <Modal.Title>Crew Documents</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    {errorMessages && <ErrorValidationAlert errors={errorMessages} />}
                     <Card className='p-2'>
                         <Form onSubmit={handleSubmit}>
                             <Form.Label><p className='text-success'>Add New File (+)</p></Form.Label>
@@ -390,7 +409,7 @@ export default function CrewList() {
                                     id="document-id"
                                     onChange={(e) => inputChangeHandler('document-id', e.target.value)}
                                 >
-                                    <option>CHOOSE DOCUMENT</option>
+                                    <option value="">CHOOSE DOCUMENT</option>
                                     {documents.map(item => (
                                         <option key={item.id} value={item.id}>
                                             {item.document_name}
