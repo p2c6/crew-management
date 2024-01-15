@@ -44,7 +44,8 @@ class CrewDocumentController extends Controller
             $extension = $file->extension();
             $fileName = \uniqid() . '-' . now()->timestamp . '.' . $extension;
             $folder = \uniqid() . '-' . now()->timestamp;
-            $file->move(public_path('uploads/' . $folder), $fileName);
+            // $file->move(public_path('uploads/' . $folder), $fileName);
+            $file->move(storage_path('app/public/uploads/' . $folder), $fileName);
 
             $original = $file->getClientOriginalName();
 
@@ -52,6 +53,7 @@ class CrewDocumentController extends Controller
                 'crew_id' => $request->crewId,
                 'document_id' => $request->document_id,
                 'doc_no' => $request->doc_no,
+                'folder' => $folder,
                 'file_name' => $fileName,
                 'original_file_name' => $original,
                 'code' => $request->code,
