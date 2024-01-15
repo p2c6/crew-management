@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
+import ErrorValidationAlert from '../../utils/ErrorValidationAlert';
 
 
 export default function AddCrewForm() {
@@ -21,8 +22,12 @@ export default function AddCrewForm() {
         })
     }
 
+    const [errorMessages, setErrorMessages] = useState(null);
+
     const handleSubmit = async (event) => {
         event.preventDefault()
+
+        setErrorMessages(null)
 
         const formData = {
             "last_name": userInput['last-name'],
@@ -34,9 +39,15 @@ export default function AddCrewForm() {
             "height": userInput['height'],
             "weight": userInput['weight'],
             "rank_id": userInput['rank-id'],
+            "age": userInput['age'],
         }
 
         const response = await createCrew(formData);
+
+        if (response.status === 'error') {
+            setErrorMessages(response.errors)
+            return false;
+        }
 
         await getCrews();
 
@@ -58,6 +69,7 @@ export default function AddCrewForm() {
     return (
         <Form onSubmit={handleSubmit}>
             <Row className="mb-3">
+                {errorMessages && <ErrorValidationAlert errors={errorMessages} />}
                 <Form.Group as={Col}>
                     <Form.Label>Last Name</Form.Label>
                     <Form.Control
@@ -106,6 +118,16 @@ export default function AddCrewForm() {
                         type="date"
                         id="birth-date"
                         onChange={(e) => inputChangeHandler('birth-date', e.target.value)}
+                    />
+                </Form.Group>
+
+                <Form.Group as={Col}>
+                    <Form.Label>Age</Form.Label>
+                    <Form.Control
+                        type="text"
+                        id="age"
+                        placeholder="Enter Age"
+                        onChange={(e) => inputChangeHandler('age', e.target.value)}
                     />
                 </Form.Group>
             </Row>
