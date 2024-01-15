@@ -77,6 +77,7 @@ class CrewsController extends Controller
     public function delete(Crew $crew)
     {
         try {
+            $crew->crewDocuments()->delete();
             $crew->delete();
 
             return response()->json(['status' => 'success', 'message' => 'Successfully Crew Deleted.'], 200);
