@@ -5,7 +5,7 @@ export const createDocument = async (payload) => {
         const response = await client.post("/api/document", payload);
         return response
     } catch (error) {
-        console.log(error.response);
+        return error.response.data
     }
 };
 
@@ -32,7 +32,7 @@ export const updateDocument = async (documentId, payload) => {
         const response = await client.put(`/api/document/${documentId}`, payload);
         return response
     } catch (error) {
-        console.log(error.response);
+        return error.response.data
     }
 };
 

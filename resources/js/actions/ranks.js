@@ -5,7 +5,7 @@ export const createRank = async (payload) => {
         const response = await client.post("/api/rank", payload);
         return response
     } catch (error) {
-        console.log(error.response);
+        return error.response.data
     }
 };
 
@@ -32,7 +32,7 @@ export const updateRank = async (rankId, payload) => {
         const response = await client.put(`/api/rank/${rankId}`, payload);
         return response
     } catch (error) {
-        console.log(error.response);
+        return error.response.data
     }
 };
 

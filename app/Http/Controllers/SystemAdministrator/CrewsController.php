@@ -28,9 +28,6 @@ class CrewsController extends Controller
                 'address' => 'required',
                 'birth_date' => 'required',
                 'age' => 'required',
-                'height' => 'required',
-                'weight' => 'required',
-                'age' => 'required',
             ]);
 
             Crew::create([
@@ -78,24 +75,8 @@ class CrewsController extends Controller
                 'address' => 'required',
                 'birth_date' => 'required',
                 'age' => 'required',
-                'height' => 'required',
-                'weight' => 'required',
-                'age' => 'required',
             ]);
 
-            Crew::create([
-                'rank_id' => $request->rank_id,
-                'first_name' => $request->first_name,
-                'middle_name' => $request->middle_name,
-                'last_name' => $request->last_name,
-                'email' => $request->email,
-                'address' => $request->address,
-                'birth_date' => $request->birth_date,
-                'age' => $request->age,
-                'height' => $request->height,
-                'weight' => $request->weight,
-                'age' => $request->age,
-            ]);
             $crew->update([
                 'rank_id' => $request->rank_id,
                 'first_name' => $request->first_name,
@@ -107,7 +88,7 @@ class CrewsController extends Controller
                 'age' => $request->age,
                 'height' => $request->height,
                 'weight' => $request->weight,
-                'age' => '18',
+                'age' => $request->age,
             ]);
 
             return response()->json(['status' => 'success', 'message' => 'Successfully Crew Updated.'], 200);

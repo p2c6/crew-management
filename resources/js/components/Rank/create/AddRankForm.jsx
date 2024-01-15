@@ -3,6 +3,7 @@ import { createRank, getRanks } from "../../../actions/ranks";
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import ErrorValidationAlert from '../../utils/ErrorValidationAlert';
 
 
 export default function AddRankForm() {
@@ -18,8 +19,12 @@ export default function AddRankForm() {
         })
     }
 
+    const [errorMessages, setErrorMessages] = useState(null);
+
     const handleSubmit = async (event) => {
         event.preventDefault()
+
+        setErrorMessages(null)
 
         const formData = {
             "code": userInput['code'],
@@ -29,6 +34,11 @@ export default function AddRankForm() {
 
         const response = await createRank(formData);
 
+        if (response.status === 'error') {
+            setErrorMessages(response.errors)
+            return false;
+        }
+
         await getRanks();
 
         navigate('/ranks', { state: { message: response.data.message } });
@@ -36,6 +46,7 @@ export default function AddRankForm() {
 
     return (
         <Form onSubmit={handleSubmit}>
+            {errorMessages && <ErrorValidationAlert errors={errorMessages} />}
             <Form.Group className="mb-3">
                 <Form.Label>Code</Form.Label>
                 <Form.Control

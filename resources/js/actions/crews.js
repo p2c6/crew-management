@@ -33,7 +33,7 @@ export const updateCrew = async (crewId, payload) => {
         const response = await client.put(`/api/crews/${crewId}`, payload);
         return response
     } catch (error) {
-        console.log(error.response);
+        return error.response.data
     }
 };
 

@@ -170,7 +170,7 @@ export default function AddCrewForm() {
                     id="rank-id"
                     onChange={(e) => inputChangeHandler('rank-id', e.target.value)}
                 >
-                    <option>CHOOSE RANK</option>
+                    <option value="">CHOOSE RANK</option>
                     {ranks.map(item => (
                         <option key={item.id} value={item.id}>
                             {item.short_name}

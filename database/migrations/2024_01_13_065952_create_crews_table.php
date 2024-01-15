@@ -17,14 +17,14 @@ class CreateCrewsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('rank_id');
             $table->string('first_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('last_name');
             $table->string('email');
             $table->string('address');
             $table->string('birth_date');
             $table->string('age');
-            $table->string('height');
-            $table->string('weight');
+            $table->string('height')->nullable();
+            $table->string('weight')->nullable();
             $table->timestamps();
 
             $table->foreign('rank_id')->references('id')->on('ranks');

@@ -3,7 +3,6 @@
 use App\Http\Controllers\SystemAdministrator\CrewDocumentController;
 use App\Http\Controllers\SystemAdministrator\CrewsController;
 use App\Http\Controllers\SystemAdministrator\DocumentController;
-use App\Http\Controllers\SystemAdministrator\FileController;
 use App\Http\Controllers\SystemAdministrator\RankController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +43,3 @@ Route::controller(RankController::class)->group(function () {
     Route::put('/rank/{rank}', 'update');
     Route::delete('/rank/{rank}', 'delete');
 });
-
-//FILE UPLOAD
-Route::post('/upload-crew-document', [FileController::class, 'upload']);

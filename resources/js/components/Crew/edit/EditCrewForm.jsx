@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import { getRanks } from '../../../actions/ranks';
+import ErrorValidationAlert from '../../utils/ErrorValidationAlert';
 
 
 
@@ -22,8 +23,12 @@ export default function EditCrewForm({ crew }) {
         })
     }
 
+    const [errorMessages, setErrorMessages] = useState(null);
+
     const handleSubmit = async (event) => {
         event.preventDefault()
+
+        setErrorMessages(null)
 
         const formData = {
             "last_name": userInput['last-name'],
@@ -35,9 +40,15 @@ export default function EditCrewForm({ crew }) {
             "height": userInput['height'],
             "weight": userInput['weight'],
             "rank_id": userInput['rank-id'],
+            "age": userInput['age'],
         }
 
         const response = await updateCrew(crew.id, formData);
+
+        if (response.status === 'error') {
+            setErrorMessages(response.errors)
+            return false;
+        }
 
         await getCrews();
 
@@ -55,6 +66,7 @@ export default function EditCrewForm({ crew }) {
             'height': crew.height || '',
             'weight': crew.weight || '',
             'rank-id': crew.rank_id || '',
+            'age': crew.age || '',
         });
     }, [crew]);
 
@@ -74,6 +86,7 @@ export default function EditCrewForm({ crew }) {
     return (
         <Form onSubmit={handleSubmit}>
             <Row className="mb-3">
+                {errorMessages && <ErrorValidationAlert errors={errorMessages} />}
                 <Form.Group as={Col}>
                     <Form.Label>Last Name</Form.Label>
                     <Form.Control
@@ -127,6 +140,17 @@ export default function EditCrewForm({ crew }) {
                         id="birth-date"
                         value={userInput['birth-date']}
                         onChange={(e) => inputChangeHandler('birth-date', e.target.value)}
+                    />
+                </Form.Group>
+
+                <Form.Group as={Col}>
+                    <Form.Label>Age</Form.Label>
+                    <Form.Control
+                        type="text"
+                        id="age"
+                        placeholder="Enter Age"
+                        value={userInput['age']}
+                        onChange={(e) => inputChangeHandler('age', e.target.value)}
                     />
                 </Form.Group>
             </Row>

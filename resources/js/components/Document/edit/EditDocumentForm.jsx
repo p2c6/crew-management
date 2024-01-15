@@ -3,6 +3,7 @@ import { updateDocument, getDocuments } from "../../../actions/documents";
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import ErrorValidationAlert from '../../utils/ErrorValidationAlert';
 
 
 
@@ -19,14 +20,23 @@ export default function EditDocumentForm({ document }) {
         })
     }
 
+    const [errorMessages, setErrorMessages] = useState(null);
+
     const handleSubmit = async (event) => {
         event.preventDefault()
+
+        setErrorMessages(null)
 
         const formData = {
             "document_name": userInput['document-name'],
         }
 
         const response = await updateDocument(document.id, formData);
+
+        if (response.status === 'error') {
+            setErrorMessages(response.errors)
+            return false;
+        }
 
         await getDocuments();
 
@@ -41,6 +51,7 @@ export default function EditDocumentForm({ document }) {
 
     return (
         <Form onSubmit={handleSubmit}>
+            {errorMessages && <ErrorValidationAlert errors={errorMessages} />}
             <Form.Group className="mb-3">
                 <Form.Label>Document Name</Form.Label>
                 <Form.Control

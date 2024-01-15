@@ -333,6 +333,9 @@ export default function CrewList() {
                 },
             });
 
+            const crewsDocs = await getCrewDocuments(crewId);
+            setCrewDocumentList(crewsDocs.data)
+
         } catch (error) {
             setErrorMessages(error.response.data.errors)
             console.error('Error uploading file:', error);

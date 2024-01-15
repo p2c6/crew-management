@@ -65,7 +65,7 @@ class CrewDocumentController extends Controller
                     'code' => $request->code,
                     'issued_date' => $request->issued_date,
                     'expiry_date' => $request->expiry_date,
-                    'person_in_charge_user_id' => 1,
+                    'person_in_charge_user_id' => 'System Administrator',
                 ]);
             }
 
