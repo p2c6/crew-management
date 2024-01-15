@@ -5,7 +5,7 @@ export const createCrew = async (payload) => {
         const response = await client.post("/api/crews", payload);
         return response
     } catch (error) {
-        console.log(error.response);
+        return error.response.data
     }
 };
 
@@ -14,6 +14,7 @@ export const getCrews = async () => {
         const response = await client.get("/api/crews");
         return response
     } catch (error) {
+        return error
         console.log(error.response);
     }
 };
